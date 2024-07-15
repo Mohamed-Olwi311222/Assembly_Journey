@@ -1,0 +1,12 @@
+program Variable;
+#include("stdlib.hhf");
+static
+    var_32 : int32 := 5;
+    var_16 : int16; //not initialized
+begin Variable;
+    stdout.put("The Initialized var is ", var_32, nl); 
+    stdout.put("Enter an int(from 0 to 65,535): ");
+    stdin.get(var_16); //get input from user
+    stdout.put("You Entered " , var_16 ,nl);
+
+end Variable;
