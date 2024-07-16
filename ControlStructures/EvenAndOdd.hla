@@ -2,7 +2,7 @@ program EvenAndOdd;
 #include("stdlib.hhf");
     static
         var1 : int8 := 0;
-        var2 : int8 := 10;
+        var2 : int8 := 50;
     begin EvenAndOdd;
 
         mov(var1, cl);   //mov var1 to register cl
