@@ -1,0 +1,25 @@
+program EvenAndOdd;
+#include("stdlib.hhf");
+static
+    var1 : int8 := 0;
+    var2 : int8 := 10;
+begin EvenAndOdd;
+
+    mov(var1, cl); //mov var1 to register cl
+    while (cl <= var2) do
+        mov(cl, al); //mov cl to al
+        xor(ah, ah); //clear ah to be all zeros for the remainder
+        mov(2, bl);  //mov 2 to bl
+        div(bl);     //divide cl by bl , quotient in al and remainder in ah
+        if (cl == 0) then
+            stdout.put((type int8 cl), " Is Zero", nl);
+        elseif (ah == 0) then
+            stdout.put((type int8 cl), " Is Even", nl);
+        else
+            stdout.put((type int8 cl), " Is Odd", nl);
+        endif;
+        inc(cl);    //increment cl
+    endwhile;
+
+
+end EvenAndOdd;
