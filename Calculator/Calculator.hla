@@ -1,0 +1,93 @@
+program Calculator;
+#include("stdlib.hhf");
+var
+    operand1 : int32;
+    operand2 : int32;
+    operator : char;
+    resultant : int32;
+begin Calculator;
+    forever
+        /*Initialize the 2 operands ,the resultant and the operator with 0*/
+        mov(edx, operand1);
+        mov(edx, operand2);
+        mov(edx, resultant);
+        stdout.put(nl, nl, "========================", nl);
+        stdout.put("To exit presss Ctrl + C", nl);
+        stdout.put("========================", nl, nl, nl);
+        /*Get the 2 operands from user*/
+        for(mov(1, bl); bl <= 2; add(1, bl)) do
+            /*Push ebx to stack to save its status if and exception happens*/
+            push(ebx);
+            /*Dont stop until user enters the 2 valid operands*/
+            forever
+                try 
+                    if (bl == 1) then
+                        stdout.put("Enter 1st Operand (value-2147483648 to +2147483647): ");
+                    elseif (bl == 2) then
+                        stdout.put("Enter 2nd Operand (value-2147483648 to +2147483647): ");
+                    endif;
+                    /*Flush stdin if user entered multiple numbers with spaces in between*/
+                    stdin.flushInput();
+                    stdin.geti32();
+                /*Break out and restore exception enviroment*/
+                unprotected break;
+                exception(ex.ValueOutOfRange);
+                    stdout.put("Value is out of range");
+                    stdout.newln();
+                exception(ex.ConversionError);
+                    stdout.put("Unknown value is entered please try again");
+                    stdout.newln();
+                endtry;
+            endfor;
+            /*Restore ebx status after exception handeling*/
+            pop(ebx);
+            if (bl = 1) then
+                mov(eax, operand1);
+            elseif (bl == 2) then
+                mov(eax, operand2);
+            endif;
+            /*For Saftey store zero in eax if exception happens or multiple inputs is given to make sure all bits are zeros*/
+            mov(0, eax);
+        endfor;
+/*---------------------------------------------------------*/
+        /*Get the Operator From user and calculate the result*/
+        forever
+            /*Flush the stdin to delete anything in the buffer*/
+            stdin.flushInput();
+            stdout.put("Please Enter Operator (+ or - or * or /): ");
+            stdin.get(operator);
+            /*For Saftey store zero in eax if exception happens*/
+            mov(0, eax);
+            if (operator = '+') then
+                add(operand1, eax);
+                add(operand2, eax);
+                break;
+            elseif (operator = '-') then
+                mov(operand1, eax);
+                sub(operand2, eax);
+                break;
+            elseif (operator = '*') then
+                mov(operand1, eax);
+                mul(operand2, eax);
+                break;
+            elseif (operator = '/') then
+                mov(operand1, eax); /*Actual value*/
+                mov(0, edx);        /*Clear edx to avoid problems with 64-bit division*/
+                mov(operand2, ebx); /*Divisor*/
+                try
+                    div(ebx);       /*Divide the value in eax by ebx, result in ebx and remainder in edx*/
+                unprotected break;  /*Break out and restore exception enviroment*/
+                exception(ex.DivideError)
+                     stdout.put("Cant divide by zero, use another operator", nl);
+                endtry;
+            else
+                stdout.put("Invalid Operator TRY AGAIN", nl);
+            endif;
+        endfor;
+            /*Write the result to stdout*/
+            mov(eax, resultant);
+            stdout.put(nl, nl, "RESULT====> ");
+            stdout.put(operand1," ", operator, " ", operand2, " = ", resultant);
+            stdout.newln();
+    endfor;
+end Calculator;
