@@ -1,1 +1,4 @@
 .vscode
+*.link
+*.exe
+*.obj
